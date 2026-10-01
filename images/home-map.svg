@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" font-family="'Apple SD Gothic Neo','Malgun Gothic',sans-serif">
+  <defs>
+    <linearGradient id="mud" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8A6A4F"/>
+      <stop offset="1" stop-color="#4E3826"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="230" fill="#BDE3F5"/>
+  <circle cx="1110" cy="80" r="45" fill="#FFD54F"/>
+  <text x="600" y="68" font-size="46" font-weight="700" fill="#0C1826" text-anchor="middle">갯벌 위와 속, 누가 어디에 살까?</text>
+  <text x="600" y="110" font-size="26" fill="#2E4A62" text-anchor="middle">갯벌 위를 돌아다니는 동물, 갯벌 속에 집을 짓고 사는 동물</text>
+  <rect x="0" y="230" width="1200" height="470" fill="url(#mud)"/>
+
+  <!-- 갯벌 위 동물 -->
+  <text x="170" y="165" font-size="24" font-weight="700" fill="#0C1826" text-anchor="middle">저어새</text>
+  <text x="170" y="228" font-size="60" text-anchor="middle">🐦</text>
+  <text x="300" y="165" font-size="24" font-weight="700" fill="#0C1826" text-anchor="middle">짱뚱어</text>
+  <text x="300" y="228" font-size="56" text-anchor="middle">🐟</text>
+  <text x="440" y="165" font-size="24" font-weight="700" fill="#0C1826" text-anchor="middle">칠게·농게</text>
+  <text x="440" y="228" font-size="56" text-anchor="middle">🦀</text>
+
+  <!-- 깊이 화살표 -->
+  <text x="70" y="290" font-size="22" font-weight="700" fill="#FFF6EA" text-anchor="middle">얕은 곳</text>
+  <line x1="70" y1="305" x2="70" y2="610" stroke="#FFF6EA" stroke-width="5"/>
+  <path d="M 70 630 L 56 604 L 84 604 Z" fill="#FFF6EA"/>
+  <text x="70" y="660" font-size="22" font-weight="700" fill="#FFF6EA" text-anchor="middle">깊은 곳</text>
+
+  <!-- 게 굴 -->
+  <path d="M 440 234 C 440 300, 485 340, 462 410" stroke="#3E2C1E" stroke-width="18" stroke-linecap="round" fill="none"/>
+  <text x="462" y="450" font-size="22" fill="#FFF6EA" text-anchor="middle">게의 굴</text>
+
+  <!-- 바지락 -->
+  <line x1="572" y1="268" x2="572" y2="232" stroke="#EAD9C2" stroke-width="5"/>
+  <line x1="590" y1="268" x2="590" y2="232" stroke="#EAD9C2" stroke-width="5"/>
+  <ellipse cx="581" cy="285" rx="32" ry="20" fill="#D8C3A5" stroke="#8A7356" stroke-width="3"/>
+  <text x="581" y="345" font-size="26" font-weight="700" fill="#FFF6EA" text-anchor="middle">바지락</text>
+
+  <!-- 갯지렁이 U자 굴 -->
+  <ellipse cx="770" cy="227" rx="18" ry="8" fill="#6E5440"/>
+  <path d="M 690 234 L 690 420 Q 690 465 730 465 Q 770 465 770 420 L 770 234" stroke="#3E2C1E" stroke-width="16" stroke-linecap="round" fill="none"/>
+  <text x="730" y="458" font-size="40" text-anchor="middle">🪱</text>
+  <text x="730" y="510" font-size="26" font-weight="700" fill="#FFF6EA" text-anchor="middle">갯지렁이</text>
+
+  <!-- 맛조개 -->
+  <line x1="900" y1="234" x2="900" y2="520" stroke="#3E2C1E" stroke-width="22" stroke-linecap="round"/>
+  <rect x="888" y="290" width="24" height="96" rx="12" fill="#D8B98A" stroke="#8A7356" stroke-width="3"/>
+  <text x="900" y="560" font-size="26" font-weight="700" fill="#FFF6EA" text-anchor="middle">맛조개</text>
+
+  <!-- 낙지 -->
+  <path d="M 1050 234 C 1010 330, 1095 420, 1050 520 S 1005 620, 1055 640" stroke="#3E2C1E" stroke-width="18" stroke-linecap="round" fill="none"/>
+  <text x="1055" y="694" font-size="54" text-anchor="middle">🐙</text>
+  <text x="1145" y="560" font-size="26" font-weight="700" fill="#FFF6EA" text-anchor="middle">낙지</text>
+  <text x="1145" y="592" font-size="20" fill="#FFF6EA" text-anchor="middle">가장 깊어요!</text>
+
+  <rect y="700" width="1200" height="50" fill="#0C1826"/>
+  <text x="600" y="735" font-size="27" fill="#F2F7FC" text-anchor="middle">썰물 때 갯벌에 뚫린 작은 구멍들은 모두 누군가의 집이에요!</text>
+</svg>

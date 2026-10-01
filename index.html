@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>갯벌 동물 탐험대</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+  :root {
+    --bg: #0C1826;
+    --panel: #152840;
+    --line: #23405E;
+    --text: #F2F7FC;
+    --muted: #93A9BF;
+    --accent: #53C6EC;
+    --font-display: 'Jua', 'Apple SD Gothic Neo', sans-serif;
+    --font-body: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    padding: 20px clamp(12px, 3vw, 40px) 40px;
+  }
+  header { text-align: center; margin-bottom: 18px; }
+  header h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(28px, 4.5vw, 46px);
+    letter-spacing: 1px;
+  }
+  header p { color: var(--muted); font-size: clamp(13px, 1.6vw, 17px); margin-top: 4px; }
+  .links { margin-top: 8px; }
+  .switch {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-size: 14px;
+    color: var(--accent);
+    text-decoration: none;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 4px 14px;
+    margin: 2px 4px;
+  }
+  .switch:hover { background: var(--panel); }
+
+  .viewer {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    overflow: hidden;
+  }
+  .stage { position: relative; background: #060D16; }
+  .stage img {
+    display: block;
+    width: 100%;
+    height: clamp(300px, 56vh, 620px);
+    object-fit: contain;
+  }
+  .nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(12, 24, 38, 0.65);
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    width: 52px;
+    height: 52px;
+    font-size: 24px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .nav:hover, .nav:focus-visible { background: var(--accent); color: #06121D; }
+  .nav:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .nav.prev { left: 14px; }
+  .nav.next { right: 14px; }
+
+  .view-toggle {
+    display: none;
+    justify-content: center;
+    gap: 12px;
+    padding: 14px 0 0;
+  }
+  .view-toggle.on { display: flex; }
+  .view-toggle button {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(18px, 2.2vw, 24px);
+    color: var(--text);
+    background: var(--panel);
+    border: 3px solid var(--line);
+    border-radius: 999px;
+    padding: 10px 30px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .view-toggle button:hover { border-color: var(--accent); }
+  .view-toggle button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .view-toggle button.on {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #06121D;
+  }
+
+  .caption { padding: 14px 22px 20px; text-align: center; }
+  .caption .name {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(24px, 3.2vw, 36px);
+  }
+  .caption .name .emoji { margin-right: 8px; }
+  .caption .place {
+    color: var(--accent);
+    font-size: clamp(15px, 2vw, 20px);
+    font-weight: 700;
+    margin-top: 6px;
+  }
+  .tag {
+    display: inline-block;
+    font-size: 0.72em;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 999px;
+    margin-left: 8px;
+    vertical-align: 2px;
+  }
+  .tag.fish  { background: #53C6EC; color: #06222E; }
+  .tag.crab  { background: #F08A6B; color: #3D1508; }
+  .tag.shell { background: #F0D28A; color: #3A2A08; }
+  .tag.under { background: #B89470; color: #2A1A0A; }
+  .tag.bird  { background: #7BD389; color: #0C3315; }
+  .tag.draw  { background: #C89BF0; color: #2A0D42; }
+  .tag.danger { background: #E5484D; color: #FFFFFF; }
+  .caption .fact { color: var(--muted); font-size: clamp(13px, 1.7vw, 16px); margin-top: 8px; }
+
+  .carousel {
+    max-width: 1100px;
+    margin: 20px auto 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .car-nav {
+    flex: 0 0 auto;
+    background: var(--panel);
+    color: var(--text);
+    border: 2px solid var(--line);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .car-nav:hover, .car-nav:focus-visible { background: var(--accent); border-color: var(--accent); color: #06121D; }
+  .car-nav:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .track {
+    flex: 1;
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 6px 2px;
+  }
+  .track::-webkit-scrollbar { display: none; }
+  .track button {
+    flex: 0 0 auto;
+    width: 130px;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(15px, 1.7vw, 18px);
+    color: var(--text);
+    background: var(--panel);
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    padding: 12px 6px;
+    cursor: pointer;
+    transition: transform 0.1s, border-color 0.15s, background 0.15s;
+  }
+  .track button .emoji { display: block; font-size: 26px; margin-bottom: 4px; }
+  .track button:hover { transform: translateY(-3px); border-color: var(--accent); }
+  .track button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .track button.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #06121D;
+  }
+  footer {
+    max-width: 1100px;
+    margin: 26px auto 0;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12.5px;
+    line-height: 1.6;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .track button, .nav, .car-nav, .view-toggle button { transition: none; }
+    .track button:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>🦀 갯벌 동물 탐험대</h1>
+  <p>갯벌 위와 갯벌 속에는 누가 살고 있을까요?</p>
+  <div class="links">
+    <a class="switch" href="https://elmtree-ahn.github.io/earth-gallery/">🌏 지표 탐험대</a>
+    <a class="switch" href="https://elmtree-ahn.github.io/sea-gallery/">🌊 바다 탐험대</a>
+    <a class="switch" href="https://elmtree-ahn.github.io/tide-gallery/">🔄 밀물 썰물 탐험대</a>
+  </div>
+</header>
+
+<div class="viewer">
+  <div class="stage">
+    <img id="photo" src="" alt="">
+    <button class="nav prev" id="prevBtn" aria-label="이전 동물">◀</button>
+    <button class="nav next" id="nextBtn" aria-label="다음 동물">▶</button>
+  </div>
+  <div class="view-toggle" id="viewToggle">
+    <button id="animalBtn">🔍 동물 보기</button>
+    <button id="traceBtn">👣 흔적 보기</button>
+  </div>
+  <div class="caption">
+    <div class="name" id="capName"></div>
+    <div class="place" id="capPlace"></div>
+    <div class="fact" id="capFact"></div>
+  </div>
+</div>
+
+<div class="carousel">
+  <button class="car-nav" id="carPrev" aria-label="버튼 목록 왼쪽으로">◀</button>
+  <div class="track" id="buttons"></div>
+  <button class="car-nav" id="carNext" aria-label="버튼 목록 오른쪽으로">▶</button>
+</div>
+
+<footer>
+  사진 출처: 위키미디어 공용(Wikimedia Commons), 자유 이용 저작물 · 첫 화면 그림은 수업용으로 제작<br>
+  사진 중 일부는 우리 갯벌에 사는 것과 같은 종류의 동물을 다른 나라에서 찍은 것이에요 · 초등 3학년 과학 '갯벌에 사는 동물' 수업 자료
+</footer>
+
+<script>
+const GROUP = {
+  draw:  "직접 그린 그림",
+  fish:  "물고기",
+  crab:  "게",
+  shell: "조개·고둥",
+  under: "갯벌 속에 숨어 살아요",
+  bird:  "갯벌을 찾는 새",
+};
+const ITEMS = [
+  { name: "누가 어디 살까?", emoji: "🗺️", group: "draw",
+    file: "home-map.svg",
+    place: "갯벌 위와 속 살펴보기 (그림)",
+    fact: "갯벌 위를 돌아다니는 동물도 있고, 갯벌 속에 구멍을 파고 숨어 사는 동물도 있어요. 버튼을 눌러 한 마리씩 만나 보아요!" },
+  { name: "짱뚱어", emoji: "🐟", group: "fish",
+    file: "jjangttung.jpg",
+    place: "서해 남쪽·남해 갯벌 (전남 순천만, 보성, 신안 등)",
+    fact: "물고기인데 갯벌 위를 가슴지느러미로 기어 다니고 폴짝폴짝 뛰어요. 피부로도 숨을 쉴 수 있어 물 밖에서도 지내요. 추운 겨울에는 갯벌 속 굴에서 겨울잠을 자요." },
+  { name: "말뚝망둥어", emoji: "👀", group: "fish",
+    file: "maltuk.jpg",
+    place: "서해·남해 갯벌",
+    fact: "짱뚱어보다 작은 망둥어 친구예요. 머리 위로 툭 튀어나온 눈으로 주변을 살피다가, 위험하면 갯벌과 물 위를 통통 튀어 달아나요." },
+  { name: "칠게", emoji: "🦀", group: "crab",
+    pair: { animal: "chilge.jpg", trace: "chilge-hole.jpg" },
+    place: "서해·남해 갯벌",
+    fact: "갯벌에 구멍을 파고 살아요. 눈자루가 길어서 굴 속에서 눈만 쏙 내밀고 밖을 살필 수 있어요. '흔적 보기'를 누르면 굴 입구에 선 칠게를 볼 수 있어요." },
+  { name: "농게", emoji: "🔴", group: "crab",
+    file: "nongge.jpg",
+    place: "서해·남해 갯벌",
+    fact: "수컷은 한쪽 집게발만 아주 크고 빨개요. 커다란 집게발을 흔들어 암컷을 부르고, 다른 수컷과 힘겨루기도 해요." },
+  { name: "흰발농게", emoji: "🤍", group: "crab", danger: true,
+    file: "white-nongge.jpg",
+    place: "서해 갯벌 (인천 영종도, 충남 서산 등)",
+    fact: "새하얀 큰 집게발을 가진 작은 게예요. 갯벌이 줄어들면서 수가 많이 줄어 멸종위기 야생생물로 정해 보호하고 있어요." },
+  { name: "엽낭게", emoji: "⚪", group: "crab",
+    pair: { animal: "yeopnang.jpg", trace: "yeopnang-balls.jpg" },
+    place: "모래가 섞인 갯벌 (서해·남해)",
+    fact: "모래를 입에 넣어 먹이만 골라 먹고, 남은 모래는 동글동글 경단으로 만들어 늘어놓아요. '흔적 보기'를 누르면 굴 둘레에 꽃처럼 퍼진 모래 경단이 보여요(태국 바닷가의 엽낭게 무리가 만든 것)." },
+  { name: "갯지렁이", emoji: "🪱", group: "under",
+    file: "worm.jpg",
+    place: "갯벌 속 (우리나라 모든 갯벌)",
+    fact: "갯벌 속에 굴을 파고 살면서 흙 속 찌꺼기를 먹어요. 덕분에 갯벌이 깨끗해지고 숨을 쉴 수 있어요. 몸 옆에 다리처럼 생긴 돌기가 많아요." },
+  { name: "낙지", emoji: "🐙", group: "under",
+    file: "nakji.jpg",
+    place: "갯벌 깊은 곳 (전남 무안, 신안 등)",
+    fact: "다리가 8개예요. 갯벌 깊숙이 굴을 파고 숨어 지내다가 밤이나 밀물 때 나와 게나 조개를 잡아먹어요." },
+  { name: "바지락", emoji: "🐚", group: "shell",
+    file: "bajirak.jpg",
+    place: "모래 섞인 갯벌 얕은 곳 (서해·남해)",
+    fact: "갯벌 얕은 곳에 몸을 묻고 살아요. 물이 들어오면 관을 내밀어 바닷물을 빨아들이고, 그 속의 작은 먹이를 걸러 먹어요." },
+  { name: "꼬막", emoji: "🐚", group: "shell",
+    file: "kkomak.jpg",
+    place: "고운 진흙 갯벌 (전남 보성 벌교 등)",
+    fact: "껍데기에 부채살처럼 굵은 줄무늬가 있어요. 전라남도 보성 벌교 갯벌의 꼬막이 아주 유명해요." },
+  { name: "맛조개", emoji: "🥢", group: "shell",
+    file: "matjogae.jpg",
+    place: "모래 섞인 갯벌 (서해·남해)",
+    fact: "기다란 막대처럼 생긴 조개예요. 갯벌에 세로로 깊은 구멍을 파고 살아요. 구멍에 소금을 조금 넣으면 깜짝 놀라 쏙 튀어 올라와요!" },
+  { name: "갯우렁이", emoji: "🐌", group: "shell",
+    pair: { animal: "uronge.jpg", trace: "uronge-egg.jpg" },
+    place: "모래 섞인 갯벌 (서해·남해)",
+    fact: "다른 조개를 큰 발로 감싸고 껍데기에 구멍을 뚫어 잡아먹는 사냥꾼 고둥이에요. '흔적 보기'를 누르면 모래와 알을 섞어 만든 '모래 목걸이' 알 덩어리를 볼 수 있어요." },
+  { name: "저어새", emoji: "🥄", group: "bird", danger: true,
+    file: "spoonbill.jpg",
+    place: "서해안 갯벌과 섬 (인천 강화도·송도 등)",
+    fact: "주걱 같은 부리를 물속에서 좌우로 휘휘 저어 먹이를 잡아서 '저어새'예요. 전 세계에 몇천 마리밖에 없는 멸종위기 새인데, 그 대부분이 우리나라 서해안 섬에서 알을 낳아요." },
+  { name: "알락꼬리마도요", emoji: "🐦", group: "bird", danger: true,
+    file: "curlew.jpg",
+    place: "서해안 갯벌 (봄·가을에 들러요)",
+    fact: "도요새 무리 중에서 몸집이 가장 크고 부리도 가장 길어요. 길게 휜 부리로 갯벌 구멍 속 게를 꺼내 먹어요. 호주와 시베리아를 오가는 먼 길에 우리 갯벌에서 쉬어 가요." },
+];
+
+let current = 0;
+let view = "animal";
+const photo = document.getElementById("photo");
+const capName = document.getElementById("capName");
+const capPlace = document.getElementById("capPlace");
+const capFact = document.getElementById("capFact");
+const buttonsEl = document.getElementById("buttons");
+const viewToggle = document.getElementById("viewToggle");
+const animalBtn = document.getElementById("animalBtn");
+const traceBtn = document.getElementById("traceBtn");
+
+ITEMS.forEach((item, i) => {
+  const b = document.createElement("button");
+  b.innerHTML = `<span class="emoji">${item.emoji}</span>${item.name}`;
+  b.addEventListener("click", () => show(i));
+  buttonsEl.appendChild(b);
+});
+
+function render() {
+  const item = ITEMS[current];
+  photo.src = "images/" + (item.pair ? item.pair[view] : item.file);
+  photo.alt = `${item.name} - ${item.place}`;
+  animalBtn.classList.toggle("on", view === "animal");
+  traceBtn.classList.toggle("on", view === "trace");
+}
+
+function show(i) {
+  current = (i + ITEMS.length) % ITEMS.length;
+  const item = ITEMS[current];
+  view = "animal";
+  viewToggle.classList.toggle("on", !!item.pair);
+  capName.innerHTML = `<span class="emoji">${item.emoji}</span>${item.name}`;
+  let tags = `<span class="tag ${item.group}">${GROUP[item.group]}</span>`;
+  if (item.danger) tags += '<span class="tag danger">멸종위기</span>';
+  capPlace.innerHTML = (item.group === "draw" ? "" : "사는 곳: ") + item.place + tags;
+  capFact.textContent = item.fact;
+  buttonsEl.querySelectorAll("button").forEach((b, j) => {
+    b.classList.toggle("active", j === current);
+    if (j === current) {
+      buttonsEl.scrollLeft = b.offsetLeft - buttonsEl.clientWidth / 2 + b.offsetWidth / 2;
+    }
+  });
+  render();
+}
+
+animalBtn.addEventListener("click", () => { view = "animal"; render(); });
+traceBtn.addEventListener("click", () => { view = "trace"; render(); });
+document.getElementById("prevBtn").addEventListener("click", () => show(current - 1));
+document.getElementById("nextBtn").addEventListener("click", () => show(current + 1));
+document.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowLeft") show(current - 1);
+  if (e.key === "ArrowRight") show(current + 1);
+  if (ITEMS[current].pair && (e.key === " " || e.key === "ArrowUp" || e.key === "ArrowDown")) {
+    e.preventDefault();
+    view = view === "animal" ? "trace" : "animal";
+    render();
+  }
+});
+document.getElementById("carPrev").addEventListener("click", () =>
+  buttonsEl.scrollLeft -= buttonsEl.clientWidth * 0.8);
+document.getElementById("carNext").addEventListener("click", () =>
+  buttonsEl.scrollLeft += buttonsEl.clientWidth * 0.8);
+
+show(0);
+</script>
+</body>
+</html>
